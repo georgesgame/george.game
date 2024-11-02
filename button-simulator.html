@@ -87,7 +87,7 @@
 </head>
 <body>
 
-    <button class="game-title" onclick="window.location.href='https://george.game'">George's Games</button>
+    <button class="game-title" onclick="window.location.href='https://georgesgame.github.io/george.game/'">George's Games</button>
     <div class="simulator-title">Button Simulator</div>
     <div class="score-display">Points: <span id="score">0</span></div>
     
@@ -205,4 +205,9 @@
             if (score < autoClickerCost) {
                 document.querySelector('.autoclicker-button').classList.add('disabled-button');
             } else {
-               
+                document.querySelector('.autoclicker-button').classList.remove('disabled-button');
+            }
+        }
+    </script>
+</body>
+</html>
