@@ -1,19 +1,9 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8" />
-
-<style id="webmakerstyle">
-
-</style>
-</head>
-<body>
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Button simulator</title>
+    <title>Button Simulator</title>
     <style>
         /* Centering content on the page */
         body {
@@ -100,6 +90,7 @@
     <button class="game-title" onclick="window.location.href='https://george.game'">George's Games</button>
     <div class="simulator-title">Button Simulator</div>
     <div class="score-display">Points: <span id="score">0</span></div>
+    
     <!-- Button and Score Display -->
     <button class="my-button" onclick="addPoint()">Click Me!</button>
     <button class="upgrade-button" onclick="upgradePoints()" disabled>Upgrade Click Power (Cost: 10)</button>
@@ -126,7 +117,6 @@
         function addPoint() {
             score += pointsPerClick;
             document.getElementById('score').textContent = score;
-
             updateButtonStates(); // Update button states after adding points
         }
 
@@ -140,7 +130,6 @@
 
                 // Update the button text to show the new cost
                 document.querySelector('.upgrade-button').textContent = `Upgrade Click Power (Cost: ${upgradeCost})`;
-
                 updateButtonStates(); // Update button states after upgrading
             }
         }
@@ -165,7 +154,6 @@
 
                 // Update the button text to show the new cost
                 document.querySelector('.autoclicker-button').textContent = `Auto Clicker (Cost: ${autoClickerCost})`;
-
                 updateButtonStates(); // Update button states after buying
             }
         }
@@ -217,15 +205,4 @@
             if (score < autoClickerCost) {
                 document.querySelector('.autoclicker-button').classList.add('disabled-button');
             } else {
-                document.querySelector('.autoclicker-button').classList.remove('disabled-button');
-            }
-        }
-    </script>
-
-</body>
-</html>
-
-
-
-</body>
-</html>
+               
