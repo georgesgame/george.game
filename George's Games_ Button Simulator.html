@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+
+</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button with Increasing Upgrade Cost</title>
+    <style>
+        /* Centering content on the page */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Style for the title button */
+        .game-title {
+            position: absolute; /* Position it relative to the viewport */
+            top: 10px; /* Distance from the top */
+            left: 10px; /* Distance from the left */
+            font-size: 24px; /* Font size for the title */
+            color: #333; /* Text color */
+            background: none; /* Remove background */
+            border: none; /* Remove border */
+            cursor: pointer; /* Show pointer cursor */
+            text-decoration: underline; /* Underline to look like a link */
+        }
+
+        /* Style for the Button Simulator text */
+        .simulator-title {
+            position: absolute; /* Position it relative to the viewport */
+            top: 10px; /* Distance from the top */
+            right: 10px; /* Distance from the right */
+            font-size: 20px; /* Font size for the simulator title */
+            color: #333; /* Text color */
+        }
+
+        /* Style for the points display */
+        .score-display {
+            font-size: 72px; /* Larger font size for points */
+            color: #333;
+            margin-bottom: 20px; /* Space between points and buttons */
+            margin-top: 10px; /* Added space at the top */
+        }
+
+        /* Style for the buttons */
+        .my-button, .upgrade-button, .autoclicker-button, .restart-button {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 20px 40px; /* Bigger padding for larger buttons */
+            border: none;
+            border-radius: 10px; /* Larger rounded corners */
+            font-size: 24px; /* Bigger text for buttons */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px; /* Space between buttons */
+        }
+
+        /* Style for the smaller Restart button */
+        .restart-button {
+            padding: 10px 20px; /* Smaller padding for the restart button */
+            font-size: 18px; /* Smaller text for the restart button */
+        }
+
+        /* Subtract input and button styles */
+        .subtract-container {
+            margin-top: 20px; /* Space between buttons and input */
+        }
+
+        .subtract-input {
+            font-size: 18px; /* Font size for the input */
+            padding: 10px; /* Padding for the input */
+            width: 80px; /* Width of the input */
+            margin-right: 10px; /* Space between input and button */
+        }
+
+        /* Disabled state for the buttons */
+        .disabled-button {
+            background-color: #cccccc; /* Gray */
+            cursor: not-allowed; /* Change cursor to not-allowed */
+        }
+    </style>
+</head>
+<body>
+
+    <button class="game-title" onclick="window.location.href='https://george.game'">George's Games</button>
+    <div class="simulator-title">Button Simulator</div>
+    <div class="score-display">Points: <span id="score">0</span></div>
+    <!-- Button and Score Display -->
+    <button class="my-button" onclick="addPoint()">Click Me!</button>
+    <button class="upgrade-button" onclick="upgradePoints()" disabled>Upgrade Click Power (Cost: 10)</button>
+    <button class="autoclicker-button" onclick="buyAutoClicker()" disabled>Auto Clicker (Cost: 150)</button>
+    <button class="restart-button" onclick="restartGame()">Restart</button>
+
+    <!-- Subtract Points Input -->
+    <div class="subtract-container">
+        <input type="number" id="subtractAmount" class="subtract-input" placeholder="Points to subtract" min="0">
+        <button onclick="subtractPoints()">Subtract Points</button>
+    </div>
+
+    <script>
+        // Initial score, points per click, and upgrade costs
+        let score = 0;
+        let pointsPerClick = 1;
+        let upgradeCost = 10;
+        let autoClickerCost = 150; // Cost for the auto-clicker
+        let autoClickerInterval;
+        let autoClickerIntervalTime = 5000; // Starting interval time in milliseconds
+        let autoClickPower = 0.5; // Starting auto-click power
+
+        // Function to add points
+        function addPoint() {
+            score += pointsPerClick;
+            document.getElementById('score').textContent = score;
+
+            updateButtonStates(); // Update button states after adding points
+        }
+
+        // Function to upgrade points per click
+        function upgradePoints() {
+            if (score >= upgradeCost) {
+                score -= upgradeCost;  // Deduct the current upgrade cost
+                pointsPerClick += 1;  // Increase points per click by 1
+                upgradeCost = Math.floor(upgradeCost * 2.5);  // Increase upgrade cost by 2.5 times
+                document.getElementById('score').textContent = score;
+
+                // Update the button text to show the new cost
+                document.querySelector('.upgrade-button').textContent = `Upgrade Click Power (Cost: ${upgradeCost})`;
+
+                updateButtonStates(); // Update button states after upgrading
+            }
+        }
+
+        // Function to buy the auto-clicker
+        function buyAutoClicker() {
+            if (score >= autoClickerCost) {
+                score -= autoClickerCost; // Deduct the cost
+                document.getElementById('score').textContent = score;
+
+                // Start or increase the speed of the auto clicker
+                clearInterval(autoClickerInterval); // Clear any existing interval
+                autoClickerInterval = setInterval(function() {
+                    score += autoClickPower; // Add points according to auto-click power
+                    document.getElementById('score').textContent = score;
+                }, autoClickerIntervalTime); // Set the interval time
+
+                // Divide the interval time by 1.5 for the next purchase
+                autoClickerIntervalTime = Math.floor(autoClickerIntervalTime / 1.5); // Divide the interval time by 1.5
+                autoClickPower *= 2; // Double the auto-click power
+                autoClickerCost = Math.floor(autoClickerCost * 2.75); // Multiply the cost for the next purchase
+
+                // Update the button text to show the new cost
+                document.querySelector('.autoclicker-button').textContent = `Auto Clicker (Cost: ${autoClickerCost})`;
+
+                updateButtonStates(); // Update button states after buying
+            }
+        }
+
+        // Function to restart the game
+        function restartGame() {
+            score = 0; // Reset score
+            pointsPerClick = 1; // Reset points per click
+            upgradeCost = 10; // Reset upgrade cost
+            autoClickerCost = 150; // Reset auto-clicker cost
+            autoClickerIntervalTime = 5000; // Reset auto-clicker interval time
+            autoClickPower = 0.5; // Reset auto-click power
+
+            document.getElementById('score').textContent = score; // Update score display
+            updateButtonStates(); // Update button states after restarting
+
+            // Reset button text for costs
+            document.querySelector('.upgrade-button').textContent = `Upgrade Click Power (Cost: ${upgradeCost})`;
+            document.querySelector('.autoclicker-button').textContent = `Auto Clicker (Cost: ${autoClickerCost})`;
+
+            // Clear any existing auto clicker interval
+            clearInterval(autoClickerInterval);
+        }
+
+        // Function to subtract points based on input
+        function subtractPoints() {
+            const subtractAmount = parseInt(document.getElementById('subtractAmount').value);
+            if (!isNaN(subtractAmount) && subtractAmount > 0) {
+                score -= subtractAmount; // Subtract points
+                if (score < 0) score = 0; // Prevent negative score
+                document.getElementById('score').textContent = score; // Update score display
+                document.getElementById('subtractAmount').value = ''; // Clear input field
+                updateButtonStates(); // Update button states after subtraction
+            }
+        }
+
+        // Function to update button states based on the current score
+        function updateButtonStates() {
+            document.querySelector('.upgrade-button').disabled = score < upgradeCost;
+            document.querySelector('.autoclicker-button').disabled = score < autoClickerCost;
+
+            // Add or remove disabled class based on score
+            if (score < upgradeCost) {
+                document.querySelector('.upgrade-button').classList.add('disabled-button');
+            } else {
+                document.querySelector('.upgrade-button').classList.remove('disabled-button');
+            }
+
+            if (score < autoClickerCost) {
+                document.querySelector('.autoclicker-button').classList.add('disabled-button');
+            } else {
+                document.querySelector('.autoclicker-button').classList.remove('disabled-button');
+            }
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+</body>
+</html>
