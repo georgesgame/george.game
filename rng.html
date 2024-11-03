@@ -47,10 +47,22 @@
             width: 100px;
         }
 
-        .generate-button {
+        .generate-button, .clear-button {
             font-size: 18px;
             padding: 10px 20px;
             cursor: pointer;
+        }
+
+        .generate-button {
+            margin-right: 10px; /* Space between buttons */
+        }
+
+        /* Additional title next to buttons */
+        .additional-title {
+            font-size: 18px;
+            color: #333;
+            margin-left: 15px; /* Space between the buttons and the title */
+            display: inline-block;
         }
 
         /* Displaying the random number */
@@ -90,6 +102,11 @@
         <input type="number" id="minValue" class="input-field" placeholder="Minimum" />
         <input type="number" id="maxValue" class="input-field" placeholder="Maximum" />
         <button class="generate-button" onclick="generateRandomNumber()">Generate</button>
+        <button class="clear-button" onclick="clearHistory()">Clear History</button>
+        
+        <!-- New title "RNG" next to buttons -->
+        <span class="additional-title">RNG</span>
+        
         <div class="result" id="resultDisplay">Result: </div>
     </div>
 
@@ -121,7 +138,13 @@
                 historyContainer.scrollTop = historyContainer.scrollHeight;
             }
         }
+
+        function clearHistory() {
+            const historyContainer = document.getElementById('historyContainer');
+            historyContainer.innerHTML = '<strong>History:</strong>'; // Reset history to initial state
+        }
     </script>
 
 </body>
 </html>
+
