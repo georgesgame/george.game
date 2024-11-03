@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        .card {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            margin: 10px; /* Increased margin for spacing */
+            display: inline-block;
+            background-color: blue;
+            color: white;
+            font-size: 24px;
+            line-height: 100px; /* Center text vertically */
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s; /* Smooth transition for background color */
+        }
+        .card.flipped {
+            background-color: green; /* Change color when flipped */
+            color: white; /* Keep text color white when flipped */
+        }
+        .button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .settings {
+            margin-bottom: 20px;
+        }
+        #cardContainer {
+            display: flex; /* Use flexbox for card layout */
+            flex-wrap: wrap; /* Allow wrapping of cards to new rows */
+            justify-content: center; /* Center cards horizontally */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Memory Match Game</h1>
+    <div class="settings">
+        <button class="button" onclick="startGame('easy')">Easy (2 pairs)</button>
+        <button class="button" onclick="startGame('medium')">Medium (4 pairs)</button>
+        <button class="button" onclick="startGame('hard')">Hard (8 pairs)</button>
+        <button class="button" onclick="startGame('custom')">Custom</button>
+        <button class="button" onclick="startGame('random')">Random</button>
+    </div>
+    <div id="cardContainer"></div>
+    <div id="result"></div>
+
+    <script>
+        let cards = [];
+        let flippedCards = [];
+        let matchedCards = [];
+        const foodItems = ['🍎', '🍌', '🍕', '🍩', '🍔', '🍣', '🌭', '🌮', '🍪', '🍰'];
+
+        function startGame(difficulty) {
+            let pairs = 0;
+            switch (difficulty) {
+                case 'easy':
+                    pairs = 2; // 2 pairs
+                    break;
+                case 'medium':
+                    pairs = 4; // 4 pairs
+                    break;
+                case 'hard':
+                    pairs = 8; // 8 pairs
+                    break;
+                case 'custom':
+                    pairs = parseInt(prompt("Enter the number of pairs (max 10):"));
+                    pairs = Math.max(1, Math.min(pairs, 10)); // Limit pairs to between 1 and 10
+                    break;
+                case 'random':
+                    pairs = Math.floor(Math.random() * 10) + 1; // Random pairs between 1 and 10
+                    break;
+                default:
+                    pairs = 2;
+            }
+            createCards(pairs);
+            renderCards();
+            document.getElementById('result').textContent = ''; // Clear previous results
+            matchedCards = []; // Reset matched cards
+        }
+
+        function createCards(pairs) {
+            cards = [];
+            const selectedFoods = getRandomFoods(pairs); // Get random foods
+            for (let food of selectedFoods) {
+                cards.push(food, food); // Push two of the same food for pairs
+            }
+            cards = shuffle(cards);
+        }
+
+        function getRandomFoods(pairs) {
+            const shuffledFoods = shuffle([...foodItems]); // Shuffle food items
+            return shuffledFoods.slice(0, pairs); // Return a selection of random food items
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderCards() {
+            const container = document.getElementById('cardContainer');
+            container.innerHTML = ''; // Clear existing cards
+            cards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.setAttribute('data-index', index);
+                cardElement.onclick = () => flipCard(cardElement);
+                container.appendChild(cardElement);
+            });
+        }
+
+        function flipCard(cardElement) {
+            if (flippedCards.length < 2 && !cardElement.classList.contains('flipped')) {
+                const index = cardElement.getAttribute('data-index');
+                cardElement.textContent = cards[index]; // Show the card value
+                cardElement.classList.add('flipped'); // Add the flipped class
+                flippedCards.push(cardElement);
+                if (flippedCards.length === 2) {
+                    setTimeout(checkMatch, 1000);
+                }
+            }
+        }
+
+        function checkMatch() {
+            const firstCard = flippedCards[0];
+            const secondCard = flippedCards[1];
+            const firstIndex = firstCard.getAttribute('data-index');
+            const secondIndex = secondCard.getAttribute('data-index');
+
+            if (cards[firstIndex] === cards[secondIndex]) {
+                matchedCards.push(firstIndex, secondIndex); // Add matched cards
+                document.getElementById('result').textContent = 'You found a match!';
+                // Check for win condition
+                if (matchedCards.length === cards.length) {
+                    document.getElementById('result').textContent = 'You win! Game restarting...';
+                    setTimeout(() => startGame('easy'), 2000); // Restart game after 2 seconds
+                }
+            } else {
+                firstCard.textContent = ''; // Hide the cards again
+                secondCard.textContent = '';
+                firstCard.classList.remove('flipped'); // Remove flipped class
+                secondCard.classList.remove('flipped'); // Remove flipped class
+                document.getElementById('result').textContent = 'Try again!';
+            }
+            flippedCards = []; // Reset flipped cards
+        }
+    </script>
+
+</body>
+</html>
