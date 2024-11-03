@@ -7,14 +7,38 @@
     <style>
         body {
             margin: 0;
-            overflow: hidden; /* Prevent scrollbars */
+            overflow: hidden;
             font-family: Arial, sans-serif;
+            background-color: #87CEEB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #333;
         }
-        canvas {
-            display: block; /* Remove gaps in the canvas */
-            background-color: #87CEEB; /* Light blue sky */
+        #fogCanvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
         }
-        /* Style for the title link */
+        .controls {
+            z-index: 1;
+            text-align: center;
+        }
+        .fog-button, .country-slider {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .temperature {
+            font-size: 24px;
+            margin-top: 15px;
+        }
+        /* Style for the George's Games link */
         .title-link {
             position: absolute;
             top: 10px;
@@ -23,41 +47,85 @@
             color: #333;
             text-decoration: underline;
             cursor: pointer;
+            z-index: 2;
         }
     </style>
 </head>
 <body>
-    <!-- Clickable Title -->
+    <!-- George's Games Link -->
     <div class="title-link" onclick="window.location.href='https://georgesgame.github.io/george.game/'">George's Games</div>
 
-    <!-- Fog Canvas -->
     <canvas id="fogCanvas"></canvas>
+
+    <div class="controls">
+        <button class="fog-button" onclick="toggleFog()">Fog: Off</button>
+        <input type="range" min="0" max="4" value="0" class="country-slider" id="countrySlider" onchange="updateTemperature()">
+        <div class="temperature" id="temperatureDisplay">Temperature: -- °C / -- °F</div>
+        <div id="countryName" style="font-size: 18px; margin-top: 10px;">Country: USA</div>
+    </div>
 
     <script>
         const canvas = document.getElementById('fogCanvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; // Set canvas width
-        canvas.height = window.innerHeight; // Set canvas height
+        const fogButton = document.querySelector('.fog-button');
+        const temperatureDisplay = document.getElementById('temperatureDisplay');
+        const countryNameDisplay = document.getElementById('countryName');
+        const countrySlider = document.getElementById('countrySlider');
+        let fogOn = false;
 
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Country temperature averages (in Celsius) and names
+        const countryData = [
+            { name: 'USA', tempC: 12 },
+            { name: 'Canada', tempC: 6 },
+            { name: 'Australia', tempC: 18 },
+            { name: 'Brazil', tempC: 24 },
+            { name: 'Russia', tempC: -5 }
+        ];
+
+        // Function to update temperature and country name
+        function updateTemperature() {
+            const countryIndex = countrySlider.value;
+            const country = countryData[countryIndex];
+            const tempCelsius = country.tempC;
+            const tempFahrenheit = Math.round((tempCelsius * 9/5) + 32);
+            countryNameDisplay.textContent = `Country: ${country.name}`;
+            temperatureDisplay.textContent = `Temperature: ${tempCelsius} °C / ${tempFahrenheit} °F`;
+        }
+
+        // Toggle fog effect
+        function toggleFog() {
+            fogOn = !fogOn;
+            fogButton.textContent = `Fog: ${fogOn ? 'On' : 'Off'}`;
+            if (fogOn) {
+                drawFog();
+                updateTemperature(); // Update temperature when fog is turned on
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                temperatureDisplay.textContent = 'Temperature: -- °C / -- °F';
+            }
+        }
+
+        // Draw fog effect
         function drawFog() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (!fogOn) return;
 
-            // Generate random fog rectangles
-            for (let i = 0; i < 15; i++) { // Number of fog layers
+            for (let i = 0; i < 15; i++) {
                 const width = Math.random() * canvas.width;
-                const height = Math.random() * (canvas.height / 5) + 50; // Height of fog
+                const height = Math.random() * (canvas.height / 5) + 50;
                 const x = Math.random() * canvas.width;
                 const y = Math.random() * canvas.height;
-
-                // Set a translucent white color for the fog
                 ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.3})`;
                 ctx.fillRect(x, y, width, height);
             }
-
-            requestAnimationFrame(drawFog); // Request the next frame
+            requestAnimationFrame(drawFog);
         }
 
-        drawFog(); // Start the fog drawing
+        // Initialize the display with default values
+        updateTemperature();
     </script>
 </body>
 </html>
