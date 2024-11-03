@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Number Generator with History</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        /* Title and link styling */
+        .title-link {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        .top-right-title {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            color: #333;
+        }
+
+        /* Style for the input, button, and result display */
+        .rng-container {
+            text-align: center;
+        }
+
+        .input-field {
+            font-size: 18px;
+            padding: 10px;
+            margin: 10px;
+            width: 100px;
+        }
+
+        .generate-button {
+            font-size: 18px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        /* Displaying the random number */
+        .result {
+            font-size: 36px;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        /* History section */
+        .history-container {
+            width: 300px;
+            max-height: 200px;
+            overflow-y: auto; /* Enables scrolling */
+            background-color: #e0e0e0;
+            padding: 10px;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .history-item {
+            font-size: 16px;
+            color: #333;
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top-left link -->
+    <div class="title-link" onclick="window.location.href='https://georgesgame.github.io/george.game/'">George's Games</div>
+    <div class="top-right-title">Random Number Generator</div>
+
+    <!-- RNG Inputs and Result -->
+    <div class="rng-container">
+        <input type="number" id="minValue" class="input-field" placeholder="Minimum" />
+        <input type="number" id="maxValue" class="input-field" placeholder="Maximum" />
+        <button class="generate-button" onclick="generateRandomNumber()">Generate</button>
+        <div class="result" id="resultDisplay">Result: </div>
+    </div>
+
+    <!-- History section -->
+    <div class="history-container" id="historyContainer">
+        <strong>History:</strong>
+    </div>
+
+    <script>
+        function generateRandomNumber() {
+            const min = parseInt(document.getElementById('minValue').value);
+            const max = parseInt(document.getElementById('maxValue').value);
+
+            // Validate input
+            if (isNaN(min) || isNaN(max) || min > max) {
+                document.getElementById('resultDisplay').textContent = 'Invalid range';
+            } else {
+                const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+                document.getElementById('resultDisplay').textContent = 'Result: ' + randomNumber;
+                
+                // Add to history
+                const historyContainer = document.getElementById('historyContainer');
+                const historyItem = document.createElement('div');
+                historyItem.classList.add('history-item');
+                historyItem.textContent = `Generated: ${randomNumber}`;
+                historyContainer.appendChild(historyItem);
+                
+                // Scroll to the bottom of the history container to show the latest result
+                historyContainer.scrollTop = historyContainer.scrollHeight;
+            }
+        }
+    </script>
+
+</body>
+</html>
