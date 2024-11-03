@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fog Effect with Link</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden; /* Prevent scrollbars */
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            display: block; /* Remove gaps in the canvas */
+            background-color: #87CEEB; /* Light blue sky */
+        }
+        /* Style for the title link */
+        .title-link {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: #333;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Clickable Title -->
+    <div class="title-link" onclick="window.location.href='https://georgesgame.github.io/george.game/'">George's Games</div>
+
+    <!-- Fog Canvas -->
+    <canvas id="fogCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('fogCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; // Set canvas width
+        canvas.height = window.innerHeight; // Set canvas height
+
+        function drawFog() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+
+            // Generate random fog rectangles
+            for (let i = 0; i < 15; i++) { // Number of fog layers
+                const width = Math.random() * canvas.width;
+                const height = Math.random() * (canvas.height / 5) + 50; // Height of fog
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+
+                // Set a translucent white color for the fog
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.3})`;
+                ctx.fillRect(x, y, width, height);
+            }
+
+            requestAnimationFrame(drawFog); // Request the next frame
+        }
+
+        drawFog(); // Start the fog drawing
+    </script>
+</body>
+</html>
