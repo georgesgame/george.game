@@ -1,4 +1,3 @@
-if you are reading this say hello
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -121,3 +120,284 @@ if you are reading this say hello
         George's Games
     </button>
 
+    <script>
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        const clearButton = document.getElementById('clearButton');
+        const paletteButton = document.getElementById('paletteButton');
+        const palette = document.getElementById('palette');
+        const colorPicker = document.getElementById('colorPicker');
+        const applyColorButton = document.getElementById('applyColorButton');
+
+        let isDrawing = false;
+
+        // Set initial drawing styles
+        ctx.lineWidth = 5;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#000'; // Default color
+
+        // Start drawing
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        });
+
+        // Draw on mouse move
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDrawing) {
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+            }
+        });
+
+        // Stop drawing
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+
+        // Stop drawing when mouse leaves the canvas
+        canvas.addEventListener('mouseout', () => {
+            isDrawing = false;
+        });
+
+        // Clear the canvas when the clear button is clicked
+        clearButton.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        // Clear the canvas when the Backspace key is pressed
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace') {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        });
+
+        // Toggle the color palette when the Palette button is clicked
+        paletteButton.addEventListener('click', () => {
+            // Toggle visibility of the color palette
+            if (palette.style.display === 'none') {
+                palette.style.display = 'grid'; // Show palette
+            } else {
+                palette.style.display = 'none'; // Hide palette
+            }
+        });
+
+        // Change drawing color when a color is selected from the palette
+        const colorBoxes = document.querySelectorAll('.color-box');
+        colorBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                const selectedColor = box.getAttribute('data-color');
+                ctx.strokeStyle = selectedColor; // Update drawing color
+                palette.style.display = 'none'; // Hide palette after color selection
+            });
+        });
+
+        // Apply color from hex input
+        applyColorButton.addEventListener('click', () => {
+            const hexColor = colorPicker.value.trim();
+            if (/^#[0-9A-Fa-f]{6}$/.test(hexColor)) {
+                ctx.strokeStyle = hexColor; // Apply the color if it's a valid hex code
+            } else {
+                alert('Please enter a valid hex color code (e.g., #ff5733)');
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+ script because i want to:         body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 1px solid #000;
+            cursor: crosshair;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #palette {
+            display: none;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+        }
+        .color-box {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            border: 2px solid #000;
+            border-radius: 5px;
+        }
+        #colorInputSection {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+        #colorInputSection input {
+            padding: 8px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            width: 120px;
+        }
+        #colorInputSection button {
+            margin-left: 10px;
+        }
+        /* Style for the George's Games button */
+        #georgesGamesButton {
+            background: none;
+            color: #007BFF;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 20px;
+        }
+        #georgesGamesButton:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="drawingCanvas" width="800" height="600"></canvas>
+    <div>
+        <button id="clearButton">Clear</button>
+        <button id="paletteButton">Palette</button>
+    </div>
+    <div id="colorInputSection">
+        <input type="text" id="colorPicker" placeholder="#000000" />
+        <button id="applyColorButton">Apply Color</button>
+    </div>
+    <div id="palette">
+        <div class="color-box" style="background-color: #000;" data-color="#000"></div>
+        <div class="color-box" style="background-color: #ff0000;" data-color="#ff0000"></div>
+        <div class="color-box" style="background-color: #00ff00;" data-color="#00ff00"></div>
+        <div class="color-box" style="background-color: #0000ff;" data-color="#0000ff"></div>
+        <div class="color-box" style="background-color: #ffff00;" data-color="#ffff00"></div>
+        <div class="color-box" style="background-color: #ff00ff;" data-color="#ff00ff"></div>
+        <div class="color-box" style="background-color: #00ffff;" data-color="#00ffff"></div>
+        <div class="color-box" style="background-color: #808080;" data-color="#808080"></div>
+        <!-- New colors -->
+        <div class="color-box" style="background-color: #ffa500;" data-color="#ffa500"></div> <!-- Orange -->
+        <div class="color-box" style="background-color: #800080;" data-color="#800080"></div> <!-- Purple -->
+        <div class="color-box" style="background-color: #f4a300;" data-color="#f4a300"></div> <!-- Golden Yellow -->
+        <div class="color-box" style="background-color: #ff1493;" data-color="#ff1493"></div> <!-- Deep Pink -->
+        <div class="color-box" style="background-color: #8b4513;" data-color="#8b4513"></div> <!-- Brown -->
+        <div class="color-box" style="background-color: #2e8b57;" data-color="#2e8b57"></div> <!-- Sea Green -->
+        <div class="color-box" style="background-color: #d2691e;" data-color="#d2691e"></div> <!-- Chocolate -->
+        <div class="color-box" style="background-color: #ff6347;" data-color="#ff6347"></div> <!-- Tomato -->
+    </div>
+
+    <!-- Link to George's Game -->
+    <button id="georgesGamesButton" onclick="window.location.href='https://georgesgame.github.io/george.game/'">
+        George's Games
+    </button>
+
+    <script>
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        const clearButton = document.getElementById('clearButton');
+        const paletteButton = document.getElementById('paletteButton');
+        const palette = document.getElementById('palette');
+        const colorPicker = document.getElementById('colorPicker');
+        const applyColorButton = document.getElementById('applyColorButton');
+
+        let isDrawing = false;
+
+        // Set initial drawing styles
+        ctx.lineWidth = 5;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#000'; // Default color
+
+        // Start drawing
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        });
+
+        // Draw on mouse move
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDrawing) {
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+            }
+        });
+
+        // Stop drawing
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+
+        // Stop drawing when mouse leaves the canvas
+        canvas.addEventListener('mouseout', () => {
+            isDrawing = false;
+        });
+
+        // Clear the canvas when the clear button is clicked
+        clearButton.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        // Clear the canvas when the Backspace key is pressed
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace') {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        });
+
+        // Toggle the color palette when the Palette button is clicked
+        paletteButton.addEventListener('click', () => {
+            // Toggle visibility of the color palette
+            if (palette.style.display === 'none') {
+                palette.style.display = 'grid'; // Show palette
+            } else {
+                palette.style.display = 'none'; // Hide palette
+            }
+        });
+
+        // Change drawing color when a color is selected from the palette
+        const colorBoxes = document.querySelectorAll('.color-box');
+        colorBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                const selectedColor = box.getAttribute('data-color');
+                ctx.strokeStyle = selectedColor; // Update drawing color
+                palette.style.display = 'none'; // Hide palette after color selection
+            });
+        });
+
+        // Apply color from hex input
+        applyColorButton.addEventListener('click', () => {
+            const hexColor = colorPicker.value.trim();
+            if (/^#[0-9A-Fa-f]{6}$/.test(hexColor)) {
+                ctx.strokeStyle = hexColor; // Apply the color if it's a valid hex code
+            } else {
+                alert('Please enter a valid hex color code (e.g., #ff5733)');
+            }
+        });
+    </script>
+</body>
+</html>
