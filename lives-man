@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .game-container {
+            background-color: #fff;
+            width: 350px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #333;
+        }
+        h1 {
+            font-size: 2rem;
+        }
+        .word-display {
+            font-size: 2rem;
+            margin: 20px 0;
+            letter-spacing: 10px;
+        }
+        .input-container {
+            margin-top: 20px;
+        }
+        input[type="text"] {
+            font-size: 1.5rem;
+            padding: 5px;
+            width: 50px;
+            text-align: center;
+        }
+        .game-info {
+            margin: 10px 0;
+            font-size: 1.2rem;
+        }
+        .incorrect-letters {
+            font-size: 1rem;
+            color: red;
+            margin-top: 10px;
+        }
+        .buttons-container {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #restart-btn {
+            background-color: #2196F3;
+        }
+
+        /* Style for George's Games link button */
+        #georges-games-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #2196F3;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 20px;
+        }
+
+        #georges-games-btn:hover {
+            color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>Hangman Game</h1>
+      <h2>More words will come soon!<h2>
+
+        <!-- Word Display -->
+        <div class="word-display" id="word-display">_ _ _ _ _</div>
+
+        <!-- Input for guessing -->
+        <div class="input-container">
+            <input type="text" maxlength="1" id="letter-input" placeholder="Guess letter">
+            <button onclick="guessLetter()">Guess</button>
+        </div>
+
+        <!-- Game Info (Lives Remaining and Incorrect Letters) -->
+        <div class="game-info">
+            <p>Lives Remaining: <strong id="lives">5</strong></p>
+        </div>
+
+        <div class="incorrect-letters">
+            <p>Incorrect Guesses: <span id="incorrect-guesses"></span></p>
+        </div>
+
+        <!-- Restart Button (Always visible) -->
+        <button id="restart-btn" onclick="restartGame()">Restart Game</button>
+
+        <!-- George's Games Button (Link styled as text) -->
+        <button id="georges-games-btn" onclick="window.location.href='https://georgesgame.github.io/george.game/'">
+            George's Games
+        </button>
+    </div>
+
+    <script>
+        // List of real words between 3 and 7 letters long
+        const words = ['apple', 'grape', 'banana', 'peach', 'melon', 'kiwi', 'lemon', 'cherry', 'mango', 'orange', 'straw', 'pear', 'plum', 'fig', 'date', 'plaza', 'vowel', 'zebra', 'scout', 'shoes', 'break'];
+
+        let selectedWord = '';
+        let displayedWord = '';
+        let lives = 5;
+        let incorrectGuesses = [];
+        let correctGuesses = [];
+
+        // Initialize the game
+        function startGame() {
+            // Randomly select a word of length between 3 and 7
+            let filteredWords = words.filter(word => word.length >= 3 && word.length <= 7);
+            selectedWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
+            displayedWord = '_ '.repeat(selectedWord.length).trim();
+            lives = 5;
+            incorrectGuesses = [];
+            correctGuesses = [];
+
+            document.getElementById('word-display').innerText = displayedWord;
+            document.getElementById('incorrect-guesses').innerText = '';
+            document.getElementById('lives').innerText = lives;
+            document.getElementById('letter-input').value = '';
+        }
+
+        // Handle letter guessing
+        function guessLetter() {
+            const letterInput = document.getElementById('letter-input');
+            const guess = letterInput.value.toLowerCase();
+
+            if (guess && guess.length === 1 && /^[a-z]$/.test(guess)) {
+                letterInput.value = '';  // Clear input box
+
+                // Check if the letter has already been guessed
+                if (correctGuesses.includes(guess) || incorrectGuesses.includes(guess)) {
+                    alert("You've already guessed that letter!");
+                    return;
+                }
+
+                if (selectedWord.includes(guess)) {
+                    correctGuesses.push(guess);
+                    updateDisplayedWord();
+                } else {
+                    incorrectGuesses.push(guess);
+                    lives--;
+                    updateGameInfo();
+                }
+
+                checkGameStatus();
+            } else {
+                alert("Please enter a valid letter.");
+            }
+        }
+
+        // Update the displayed word based on correct guesses
+        function updateDisplayedWord() {
+            displayedWord = selectedWord.split('').map(letter => correctGuesses.includes(letter) ? letter : '_').join(' ');
+            document.getElementById('word-display').innerText = displayedWord;
+        }
+
+        // Update the lives and incorrect guesses
+        function updateGameInfo() {
+            document.getElementById('lives').innerText = lives;
+            document.getElementById('incorrect-guesses').innerText = incorrectGuesses.join(', ');
+        }
+
+        // Check if the game is won or lost
+        function checkGameStatus() {
+            if (displayedWord === selectedWord) {
+                alert("You win!");
+            } else if (lives === 0) {
+                alert("Game Over! You've run out of lives.");
+            }
+        }
+
+        // Restart the game
+        function restartGame() {
+            startGame();
+        }
+
+        // Start the game when the page loads
+        startGame();
+    </script>
+</body>
+</html>
